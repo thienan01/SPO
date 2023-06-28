@@ -1,0 +1,17 @@
+D:\Github\SPO\SPO\bin\Debug\net6.0\SPO.exe
+D:\Github\SPO\SPO\bin\Debug\net6.0\SPO.deps.json
+D:\Github\SPO\SPO\bin\Debug\net6.0\SPO.runtimeconfig.json
+D:\Github\SPO\SPO\bin\Debug\net6.0\SPO.dll
+D:\Github\SPO\SPO\bin\Debug\net6.0\SPO.pdb
+D:\Github\SPO\SPO\bin\Debug\net6.0\Newtonsoft.Json.dll
+D:\Github\SPO\SPO\obj\Debug\net6.0\SPO.csproj.AssemblyReference.cache
+D:\Github\SPO\SPO\obj\Debug\net6.0\SPO.GeneratedMSBuildEditorConfig.editorconfig
+D:\Github\SPO\SPO\obj\Debug\net6.0\SPO.AssemblyInfoInputs.cache
+D:\Github\SPO\SPO\obj\Debug\net6.0\SPO.AssemblyInfo.cs
+D:\Github\SPO\SPO\obj\Debug\net6.0\SPO.csproj.CoreCompileInputs.cache
+D:\Github\SPO\SPO\obj\Debug\net6.0\SPO.csproj.CopyComplete
+D:\Github\SPO\SPO\obj\Debug\net6.0\SPO.dll
+D:\Github\SPO\SPO\obj\Debug\net6.0\refint\SPO.dll
+D:\Github\SPO\SPO\obj\Debug\net6.0\SPO.pdb
+D:\Github\SPO\SPO\obj\Debug\net6.0\SPO.genruntimeconfig.cache
+D:\Github\SPO\SPO\obj\Debug\net6.0\ref\SPO.dll

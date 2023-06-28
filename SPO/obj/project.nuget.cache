@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "enyfJq6tv8mmfuebCj92z1bXUoNVbiJ1EvLEcV3Mj7aWaeojVhZjQsQP1gztZep51ojehrK+qi+vAChgZ9q3Mg==",
+  "success": true,
+  "projectFilePath": "D:\\Github\\SPO\\SPO\\SPO.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\thien\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
