@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Microsoft.SharePoint.Client;
+using PnP.Framework;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
+using File = Microsoft.SharePoint.Client.File;
 
 namespace SPO
 {
@@ -10,98 +13,112 @@ namespace SPO
     {
         public static async Task Run()
         {
-            string siteUrl = "https://75v04z.sharepoint.com";
-            string azureAdTenantId = "df0b6f54-2a96-44cf-b4e0-090cf88d18e8";
-            string clientId = "2c0ab9bc-5c11-4b7b-867f-68fef23c53f8";
-            string clientSecret = "jX08Q~qnvf7wElb1FeEjylXzXqv93iODESRO9bUm";
-
-            string authority = $"https://login.microsoftonline.com/{azureAdTenantId}";
-            string resource = "https://75v04z.sharepoint.com";
-
-            string accessToken = await GetAccessToken(authority, resource, clientId, clientSecret);
-            Console.WriteLine("token: " + accessToken);
-            await CreateSiteCollection(siteUrl, accessToken);
+            var uniqueID = new Guid("db25253a-0ff5-471b-ab3b-cb39407b6565");
+            await RenameByUniqueID(uniqueID, "hugo.png");
         }
 
-        public static async Task<string> GetAccessToken(string authority, string resource, string clientId, string clientSecret)
+        public static async Task RenameByFileName(string fileName)
         {
-            using (var httpClient = new HttpClient())
+            var siteUrl = "https://75v04z.sharepoint.com/sites/FamilyTree";
+            var context = await GetClientContext(siteUrl);
+
+            Web web = context.Web;
+            List library = web.Lists.GetByTitle("Avatars");
+            context.Load(web);
+            context.Load(library);
+
+            // Retrieve the file
+            CamlQuery query = new CamlQuery();
+            query.ViewXml = $"<View Scope='RecursiveAll'><Query><Where><Eq><FieldRef Name='FileLeafRef'/><Value Type='Text'>{fileName}</Value></Eq></Where></Query></View>";
+            ListItemCollection items = library.GetItems(query);
+            context.Load(items);
+            context.ExecuteQuery();
+
+            if (items.Count == 1)
             {
-                var tokenEndpoint = $"{authority}/oauth2/token";
-                var content = new FormUrlEncodedContent(new[]
-                {
-                new KeyValuePair<string, string>("grant_type", "client_credentials"),
-                new KeyValuePair<string, string>("client_id", clientId),
-                new KeyValuePair<string, string>("client_secret", clientSecret),
-                new KeyValuePair<string, string>("resource", resource)
-            });
+                // Get the file and rename it
+                ListItem item = items[0];
+                Microsoft.SharePoint.Client.File file = item.File;
+                file.MoveTo($"Avatars/hahaha.png", MoveOperations.Overwrite);
+                context.ExecuteQuery();
 
-                var response = await httpClient.PostAsync(tokenEndpoint, content);
-                var responseContent = await response.Content.ReadAsStringAsync();
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new Exception($"Failed to retrieve access token: {responseContent}");
-                }
-
-                dynamic tokenResult = Newtonsoft.Json.JsonConvert.DeserializeObject(responseContent);
-                return tokenResult.access_token;
+                Console.WriteLine("File renamed successfully.");
+            }
+            else
+            {
+                Console.WriteLine("File not found or multiple files found with the same name.");
             }
         }
-
-        public static async Task CreateSiteCollection(string siteUrl, string accessToken)
+        public static async Task RenameByUniqueID(Guid uniqueID, string newName)
         {
-            //using (var httpClient = new HttpClient())
-            //{
-            //    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-            //    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var siteUrl = "https://75v04z.sharepoint.com/sites/FamilyTree";
+            var context = await GetClientContext(siteUrl);
+            Web web = context.Web;
+            List library = web.Lists.GetByTitle("Avatars");
 
-            //    var endpointUrl = $"{siteUrl}/_api/site/create";
-            //    var requestContent = new StringContent("{\"parameters\":{\"__metadata\":{\"type\":\"SP.SiteCreationRequest\"},\"Title\":\"AnleTestSite\",\"Url\":\"/sites/AnleTestSite\",\"Template\":\"STS#0\",\"Owner\":\"thienanhello@75v04z.onmicrosoft.com\"}}");
-            //    requestContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            context.Load(library);
+            var items = library.GetItemByUniqueId(uniqueID);
 
-            //    var response = await httpClient.PostAsync(endpointUrl, requestContent);
-            //    var responseContent = await response.Content.ReadAsStringAsync();
+            context.Load(items, items=> items.File);
+            await context.ExecuteQueryAsync();
 
-            //    if (!response.IsSuccessStatusCode)
-            //    {
-            //        throw new Exception($"Failed to create site collection: {responseContent}");
-            //    }
 
-            //    Console.WriteLine("Site collection created successfully.");
-            //}
+                File file = items.File;
+                file.MoveTo($"Avatars/{newName}", MoveOperations.Overwrite);
+                context.ExecuteQuery();
+        }
 
-            using (var httpClient = new HttpClient())
+        public static async Task GetUniqueID(string fileName)
+        {
+            var siteUrl = "https://75v04z.sharepoint.com/sites/FamilyTree";
+            var context = await GetClientContext(siteUrl);
+            Web web = context.Web;
+            List library = web.Lists.GetByTitle("Avatars");
+
+            CamlQuery query = new CamlQuery();
+            query.ViewXml = $"<View Scope='RecursiveAll'><Query><Where><Eq><FieldRef Name='FileLeafRef'/><Value Type='Text'>{fileName}</Value></Eq></Where></Query></View>";
+
+            ListItemCollection items = library.GetItems(query);
+            context.Load(items);
+            context.ExecuteQuery();
+
+            if (items.Count == 1)
             {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
-                var endpointUrl = $"{siteUrl}/_api/SPSiteManager/create";
-
-                // Define the properties for the new site collection
-                var requestBody = new
-                {
-                    request = new
-                    {
-                        Title = "New Site Collection",
-                        Url = "/sites/newsitecollection",
-                        Template = "STS#0", // Template for Team Site
-                        Owner = "thienanhello@75v04z.onmicrosoft.com",
-                        StorageMaximumLevel = 100,
-                        UserCodeMaximumLevel = 100
-                    }
-                };
-
-                var jsonRequestBody = Newtonsoft.Json.JsonConvert.SerializeObject(requestBody);
-                var requestContent = new StringContent(jsonRequestBody, Encoding.UTF8, "application/json");
-
-                var response = await httpClient.PostAsync(endpointUrl, requestContent);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    throw new Exception($"Failed to create site collection: {responseContent}");
-                }
+                ListItem item = items[0];
+                File file = item.File;
+                context.Load(file, f => f.UniqueId);
+                context.ExecuteQuery();
+                Console.WriteLine(file.UniqueId.ToString());
             }
+            else if (items.Count == 0)
+            {
+                throw new Exception("File not found in the document library.");
             }
+            else
+            {
+                throw new Exception("Multiple files with the same name found in the document library.");
+            }
+
+        }
+
+        public static async Task<ClientContext> GetClientContext(string siteUrl)
+        {
+            AuthenticationManager authen = new AuthenticationManager(setting.clientId, setting.userName, ConvertToSecureString(setting.password));
+            return await authen.GetContextAsync(siteUrl);
+        }
+
+        private static SecureString ConvertToSecureString(string password)
+        {
+            if (password == null)
+                throw new ArgumentNullException("password");
+
+            var securePassword = new SecureString();
+
+            foreach (char c in password)
+                securePassword.AppendChar(c);
+
+            securePassword.MakeReadOnly();
+            return securePassword;
+        }
     }
 }

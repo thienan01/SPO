@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Github\\SPO\\SPO\\SPO.csproj": {}
+    "C:\\Users\\thien\\OneDrive\\Máy tính\\code\\SPO\\SPO\\SPO.csproj": {}
   },
   "projects": {
-    "D:\\Github\\SPO\\SPO\\SPO.csproj": {
+    "C:\\Users\\thien\\OneDrive\\Máy tính\\code\\SPO\\SPO\\SPO.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Github\\SPO\\SPO\\SPO.csproj",
+        "projectUniqueName": "C:\\Users\\thien\\OneDrive\\Máy tính\\code\\SPO\\SPO\\SPO.csproj",
         "projectName": "SPO",
-        "projectPath": "D:\\Github\\SPO\\SPO\\SPO.csproj",
+        "projectPath": "C:\\Users\\thien\\OneDrive\\Máy tính\\code\\SPO\\SPO\\SPO.csproj",
         "packagesPath": "C:\\Users\\thien\\.nuget\\packages\\",
-        "outputPath": "D:\\Github\\SPO\\SPO\\obj\\",
+        "outputPath": "C:\\Users\\thien\\OneDrive\\Máy tính\\code\\SPO\\SPO\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -44,9 +44,17 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "Microsoft.SharePoint.Client": {
+              "target": "Package",
+              "version": "[14.0.4762.1000, )"
+            },
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.3, )"
+            },
+            "PnP.Framework": {
+              "target": "Package",
+              "version": "[1.13.0, )"
             }
           },
           "imports": [
